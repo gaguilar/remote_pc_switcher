@@ -4,32 +4,22 @@ import sys
 
 
 GPIO_POWER  =  8 # PIN 24
-GPIO_RESET  = 25 # PIN 22
 GPIO_STATUS =  7 # PIN 26
 
-CMDS = {'power', 'power4s', 'reset', 'status'}
+CMDS = {'power', 'power4s', 'status'}
 
 def setup():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM) # pin scheme
 
-    GPIO.setup(GPIO_POWER, GPIO.OUT) 
-    GPIO.output(GPIO_POWER, GPIO.HIGH)
-
-    GPIO.setup(GPIO_RESET, GPIO.OUT) 
-    GPIO.output(GPIO_RESET, GPIO.HIGH)
-
     GPIO.setup(GPIO_STATUS, GPIO.IN) 
+    GPIO.setup(GPIO_POWER, GPIO.OUT) 
+    GPIO.output(GPIO_POWER, GPIO.LOW)
 
 def power(sleeptime=0.5):
-    GPIO.output(GPIO_POWER, GPIO.LOW)
-    time.sleep(sleeptime)
     GPIO.output(GPIO_POWER, GPIO.HIGH)
-
-def reset():
-    GPIO.output(GPIO_RESET, GPIO.LOW)
-    time.sleep(0.5)
-    GPIO.output(GPIO_RESET, GPIO.HIGH)
+    time.sleep(sleeptime)
+    GPIO.output(GPIO_POWER, GPIO.LOW)
 
 def status():
     if GPIO.input(GPIO_STATUS) == 1:
@@ -53,8 +43,6 @@ def main():
         power()
     elif cmd == 'power4s':
         power(4.5)
-    elif cmd == 'reset':
-        reset()
     elif cmd == 'status':
         print("LED status: {}".format(status()))
 
